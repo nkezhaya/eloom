@@ -1,0 +1,19 @@
+<nav class="flex flex-1 flex-col">
+  <ul role="list" class="flex flex-1 flex-col gap-y-7">
+    <li>
+      <ul role="list" class="-mx-2 space-y-1">
+        <.nav_item :let={icon_class} router={@router} current_path={@current_path} href="/">
+          <UI.Icon.home class={icon_class} /> Home
+        </.nav_item>
+
+        <.nav_item :let={icon_class} router={@router} current_path={@current_path} href="/events">
+          <UI.Icon.cursor_arrow_ripple class={icon_class} /> Events
+        </.nav_item>
+
+        <.nav_item :let={icon_class} router={@router} current_path={@current_path} href="/funnels">
+          <UI.Icon.chart_bar class={icon_class} /> Funnels
+        </.nav_item>
+      </ul>
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "chart.js": "^4.4.9",
+    "fast-geoip": "^1.1.88",
+    "geoip-lite": "^1.4.10"
+  }
+}

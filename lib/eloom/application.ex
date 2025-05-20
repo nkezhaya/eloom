@@ -1,0 +1,16 @@
+defmodule Eloom.Application do
+  @moduledoc false
+
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      Eloom.EventBuffer,
+      {Phoenix.PubSub, name: Eloom.PubSub}
+    ]
+
+    opts = [strategy: :one_for_one, name: Eloom.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
