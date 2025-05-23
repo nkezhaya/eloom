@@ -50,8 +50,8 @@ defmodule EloomWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {EloomWeb.Layouts, :app}
+      use Phoenix.LiveView, layout: {EloomWeb.Layouts, :app}
+      import EloomWeb.LiveHelpers
 
       unquote(html_helpers())
     end
@@ -60,6 +60,7 @@ defmodule EloomWeb do
   def live_component do
     quote do
       use Phoenix.LiveComponent
+      import EloomWeb.LiveHelpers
 
       unquote(html_helpers())
     end

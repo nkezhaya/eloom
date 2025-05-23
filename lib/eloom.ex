@@ -22,4 +22,10 @@ defmodule Eloom do
   def count_events do
     Config.event_repo().aggregate(Event, :count)
   end
+
+  def count_sessions(days) do
+    Event
+    |> where([e], e.timestamp > fragment("now() - interval '90 days'"))
+    |> Config.event_repo().aggregate(:count)
+  end
 end

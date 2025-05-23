@@ -9,11 +9,18 @@ defmodule EloomWeb.FunnelLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="sm:flex sm:items-center">
-        <UI.date_range_button_group />
+    <form>
+      <div class="space-y-12">
+        <div class="border-b border-gray-900/10 pb-12">
+          <h2 class="text-base/7 font-semibold text-gray-900 mb-2">Funnel</h2>
+          <div class="px-4 sm:px-6 lg:px-8">
+            <div class="sm:flex sm:items-center">
+              <UI.date_range_button_group />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </form>
     """
   end
 end
