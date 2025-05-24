@@ -62,7 +62,14 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :eloom, repo: Example.Repo, event_repo: Example.EventRepo
+config :eloom,
+  repo: Example.Repo,
+  event_repo: Example.EventRepo,
+  geoip: [
+    account_id: "account id",
+    license_key: "license key",
+    edition: "edition"
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

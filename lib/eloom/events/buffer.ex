@@ -1,4 +1,4 @@
-defmodule Eloom.EventBuffer do
+defmodule Eloom.Events.Buffer do
   @moduledoc false
   use GenServer
 

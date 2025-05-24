@@ -60,7 +60,7 @@ defmodule Mix.Tasks.Eloom.Import do
     end)
     |> Stream.run()
 
-    Eloom.EventBuffer.flush()
+    Eloom.Events.Buffer.flush()
   end
 
   defp import_from_project_secret(_project_secret) do

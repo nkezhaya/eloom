@@ -1,7 +1,52 @@
 defmodule Eloom.Reports do
   import Ecto.Query
 
+  alias Eloom.{Config, Event}
   alias __MODULE__.{Report, Funnel}
+
+  defmacrop now() do
+    quote do
+      fragment("NOW()")
+    end
+  end
+
+  defmacrop to_interval_day(days) do
+    quote do
+      fragment("toIntervalDay(?)", unquote(days))
+    end
+  end
+
+  defmacrop to_date(timestamp) do
+    quote do
+      fragment("toDate(?)", unquote(timestamp))
+    end
+  end
+
+  def count_sessions(days) do
+    {lower, upper} =
+      case days do
+        %Range{} = range -> {range.first, range.last}
+        int when is_integer(int) -> {int, nil}
+      end
+
+    query =
+      Event
+      |> select([e], %{
+        distinct_id: e.distinct_id,
+        date: to_date(e.timestamp),
+        min: min(e.timestamp)
+      })
+      |> where([e], e.timestamp >= now() - to_interval_day(^lower))
+      |> group_by([e], [e.distinct_id, to_date(e.timestamp)])
+
+    if upper do
+      where(query, [e], e.timestamp <= now() - to_interval_day(^upper))
+    else
+      query
+    end
+    |> subquery()
+    |> Config.event_repo().aggregate(:count)
+  end
 
   def create_report(params) do
     %Report{}

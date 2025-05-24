@@ -5,8 +5,10 @@ defmodule Eloom.Application do
 
   @impl true
   def start(_type, _args) do
+    Eloom.Config.validate!()
+
     children = [
-      Eloom.EventBuffer,
+      Eloom.Events.Buffer,
       {Phoenix.PubSub, name: Eloom.PubSub}
     ]
 

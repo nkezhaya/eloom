@@ -6,7 +6,7 @@ defmodule EloomWeb.EventLive do
     {:ok,
      socket
      |> stream_configure(:events, dom_id: &"event-#{&1.insert_id}")
-     |> assign(num_entries: 0, total_entries: Eloom.count_events(), end_cursor: nil)}
+     |> assign(num_entries: 0, total_entries: Eloom.Events.count_events(), end_cursor: nil)}
   end
 
   @impl true
@@ -102,7 +102,7 @@ defmodule EloomWeb.EventLive do
 
   defp stream_events(socket, params) do
     %{entries: entries, end_cursor: end_cursor} =
-      Eloom.paginate_events(Map.put(params, "before", socket.assigns.end_cursor))
+      Eloom.Events.paginate_events(Map.put(params, "before", socket.assigns.end_cursor))
 
     socket
     |> assign(:num_entries, socket.assigns.num_entries + length(entries))

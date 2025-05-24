@@ -1,20 +1,22 @@
 defmodule EloomWeb.HomeLive do
   use EloomWeb, :live_view
 
+  alias Eloom.Reports
+
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, assign(socket, :days, 30)}
   end
 
   def render(assigns) do
     ~H"""
     <div>
-      <h3 class="text-base font-semibold text-gray-900">Last 30 days</h3>
+      <h3 class="text-base font-semibold text-gray-900">Last {@days} days</h3>
       <dl class="mt-5 grid grid-cols-1 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-sm md:grid-cols-3 md:divide-x md:divide-y-0">
         <div class="px-4 py-5 sm:p-6">
           <dt class="text-base font-normal text-gray-900">Sessions</dt>
           <dd class="mt-1 flex items-baseline justify-between md:block lg:flex">
             <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-              {number_to_delimited(Eloom.count_sessions(30))}
+              {number_to_delimited(Reports.count_sessions(@days))}
               <span class="ml-2 text-sm font-medium text-gray-500">from 70,946</span>
             </div>
 
