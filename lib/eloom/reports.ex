@@ -22,6 +22,19 @@ defmodule Eloom.Reports do
     end
   end
 
+  defmacrop window_funnel(window, field, args) do
+    count = length(args)
+    condition_params = List.duplicate("?", count) |> Enum.join(", ")
+    frg = "windowFunnel(?)(?::DateTime, #{condition_params})"
+    args = [field | args]
+    args = [window | args]
+    args = [frg | args]
+
+    quote do
+      fragment(unquote_splicing(args))
+    end
+  end
+
   def count_sessions(days) do
     {lower, upper} =
       case days do
@@ -51,41 +64,21 @@ defmodule Eloom.Reports do
   def create_report(params) do
     %Report{}
     |> Report.changeset(params)
-    |> Eloom.Config.repo().insert()
+    |> Config.repo().insert()
   end
 
-  def run_funnel(%Funnel{} = funnel) do
-    {_, result} =
-      funnel.steps
-      |> Enum.reduce({[], []}, fn step, {steps, result} ->
-        steps = steps ++ [step]
-        result = [distinct_count_for_steps(steps) | result]
-        {steps, result}
-      end)
-
-    Enum.reverse(result)
-  end
-
-  defp distinct_count_for_steps(steps) do
-    [step | tl] = steps
-
-    query =
-      from(e in Eloom.Event,
-        where: e.event == ^step.event,
-        select: count(e.distinct_id, :distinct)
-      )
-
-    query =
-      Enum.reduce(tl, query, fn step, q ->
-        from([..., e] in q,
-          inner_join: e2 in Eloom.Event,
-          on: e2.distinct_id == e.distinct_id,
-          where: e2.timestamp > e.timestamp,
-          where: e2.event == ^step.event,
-          where: e2.timestamp <= datetime_add(e.timestamp, 1, "day")
-        )
-      end)
-
-    Eloom.Config.event_repo().one(query)
+  def run_funnel(%Funnel{} = _funnel) do
+    Event
+    |> select([e], %{
+      distinct_id: e.distinct_id,
+      stage:
+        window_funnel(7200, e.timestamp, [e.event == "Homepage Visit", e.event == "Page Visit"])
+    })
+    |> group_by([e], e.distinct_id)
+    |> subquery()
+    |> from()
+    |> group_by([e], e.stage)
+    |> select([e], %{stage: e.stage, count: count(e.stage)})
+    |> Config.event_repo().all()
   end
 end
