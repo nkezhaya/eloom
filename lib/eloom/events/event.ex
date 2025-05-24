@@ -1,4 +1,4 @@
-defmodule Eloom.Event do
+defmodule Eloom.Events.Event do
   use Ecto.Schema
 
   @primary_key false

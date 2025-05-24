@@ -1,7 +1,8 @@
 defmodule Eloom.Reports do
   import Ecto.Query
 
-  alias Eloom.{Config, Event}
+  alias Eloom.Config
+  alias Eloom.Events.Event
   alias __MODULE__.{Report, Funnel}
 
   defmacrop now() do
@@ -19,19 +20,6 @@ defmodule Eloom.Reports do
   defmacrop to_date(timestamp) do
     quote do
       fragment("toDate(?)", unquote(timestamp))
-    end
-  end
-
-  defmacrop window_funnel(window, field, args) do
-    count = length(args)
-    condition_params = List.duplicate("?", count) |> Enum.join(", ")
-    frg = "windowFunnel(?)(?::DateTime, #{condition_params})"
-    args = [field | args]
-    args = [window | args]
-    args = [frg | args]
-
-    quote do
-      fragment(unquote_splicing(args))
     end
   end
 
@@ -67,18 +55,32 @@ defmodule Eloom.Reports do
     |> Config.repo().insert()
   end
 
-  def run_funnel(%Funnel{} = _funnel) do
-    Event
-    |> select([e], %{
-      distinct_id: e.distinct_id,
-      stage:
-        window_funnel(7200, e.timestamp, [e.event == "Homepage Visit", e.event == "Page Visit"])
-    })
-    |> group_by([e], e.distinct_id)
-    |> subquery()
-    |> from()
-    |> group_by([e], e.stage)
-    |> select([e], %{stage: e.stage, count: count(e.stage)})
-    |> Config.event_repo().all()
+  def run_funnel(%Funnel{} = funnel) do
+    events =
+      for {_, n} <- Enum.with_index(funnel.steps) do
+        "event = {$#{n}:String}"
+      end
+      |> Enum.join(", ")
+
+    params = for step <- funnel.steps, do: step.event
+
+    """
+    SELECT
+        funnel_stage,
+        count(funnel_stage) AS user_count
+    FROM
+    (
+        SELECT
+            distinct_id,
+            windowFunnel(7200)(
+              CAST(timestamp, 'DateTime'),
+              #{events}
+            ) AS funnel_stage
+        FROM events
+        GROUP BY distinct_id
+    ) AS results
+    GROUP BY funnel_stage
+    """
+    |> Config.event_repo().query!(params)
   end
 end
