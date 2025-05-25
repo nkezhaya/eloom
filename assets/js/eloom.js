@@ -73,18 +73,10 @@ const Eloom = (function () {
     const key = 'eloom_anonymous_id';
     let id = localStorage.getItem(key);
     if (!id) {
-      id = generateInsertId();
+      id = crypto.randomUUID();
       localStorage.setItem(key, id);
     }
     return id;
-  }
-
-  function generateInsertId() {
-    const bytes = new Uint8Array(16);
-    crypto.getRandomValues(bytes);
-    return Array.from(bytes)
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
   }
 
   return { init, identify, setUserProperties, track, flush };
