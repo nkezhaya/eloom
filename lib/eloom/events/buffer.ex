@@ -151,7 +151,7 @@ defmodule Eloom.Events.Buffer do
         }
       end
 
-    Eloom.Config.event_repo().insert_all(Eloom.Event, entries)
+    Eloom.Config.event_repo().insert_all(Eloom.Events.Event, entries)
   end
 
   defp schedule_work,
