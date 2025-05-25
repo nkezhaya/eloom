@@ -1,5 +1,13 @@
 defmodule Eloom.Events.Buffer do
-  @moduledoc false
+  @moduledoc """
+  A buffered event tracking GenServer for efficiently batching and inserting
+  analytics events into the database.
+
+  Events are temporarily stored in an ETS table, indexed by a monotonically
+  increasing atomic counter. Events are periodically flushed to the database in
+  configurable chunks, ensuring optimal write performance.
+  """
+
   use GenServer
 
   @table_name :eloom_event_buffer_table
@@ -7,6 +15,10 @@ defmodule Eloom.Events.Buffer do
   @flush_ms 2_000
   @flush_chunk_size 10_000
 
+  @doc """
+  Tracks a new event, assigning it a unique insert ID and timestamp if not provided.
+  """
+  @spec track(String.t(), map()) :: :ok
   def track(event, properties) do
     insert_id =
       case properties["$insert_id"] do
@@ -19,8 +31,14 @@ defmodule Eloom.Events.Buffer do
 
     counter = :atomics.add_get(counter_ref(), 1, 1)
     :ets.insert(@table_name, {counter, insert_id, event, properties})
+
+    :ok
   end
 
+  @doc """
+  Synchronously flushes all buffered events to persistent storage.
+  """
+  @spec flush() :: :ok
   def flush do
     GenServer.call(__MODULE__, :flush, :infinity)
   end
