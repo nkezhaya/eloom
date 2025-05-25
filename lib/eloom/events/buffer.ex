@@ -147,7 +147,7 @@ defmodule Eloom.Events.Buffer do
           event: event,
           timestamp: timestamp,
           distinct_id: distinct_id,
-          properties: Jason.encode!(properties)
+          properties: JSON.encode!(properties)
         }
       end
 

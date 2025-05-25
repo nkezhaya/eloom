@@ -42,7 +42,7 @@ defmodule Mix.Tasks.Eloom.Import do
     file
     |> File.stream!()
     |> Stream.each(fn line ->
-      line = Jason.decode!(line)
+      line = JSON.decode!(line)
 
       properties =
         if Map.has_key?(line["properties"], "time") do
