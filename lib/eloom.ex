@@ -3,9 +3,6 @@ defmodule Eloom do
   Eloom does a thing.
   """
 
-  @spec track(String.t(), map() | keyword()) :: :ok
-  def track(event, properties \\ %{}) do
-    __MODULE__.Events.Buffer.track(event, properties)
-    :ok
-  end
+  @spec track(String.t(), map()) :: :ok
+  defdelegate track(event, properties), to: __MODULE__.Events.Buffer
 end
