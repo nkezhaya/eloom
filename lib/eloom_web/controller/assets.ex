@@ -1,4 +1,4 @@
-defmodule EloomWeb.AssetsPlug do
+defmodule EloomWeb.AssetController do
   @moduledoc false
   import Plug.Conn
 

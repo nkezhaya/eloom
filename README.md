@@ -16,12 +16,16 @@
 ### 1. Install via Mix
 
 ```elixir
-{:eloom, "~> 0.1"}
+def deps do
+  {:eloom, "~> 0.1"}
+end
 ```
 
 ### 2. Configuration
 
 ```elixir
+# config/config.exs
+
 config :eloom,
   repo: MyApp.Repo,
   event_repo: MyApp.EventRepo,
@@ -52,7 +56,7 @@ end
 - [ ] Filtering raw events
 - [ ] Event data dump
 - [ ] The whole JavaScript tracking library that sends events to Eloom from the end user's browser
-- [ ] GeoIP integration, updating the database automatically using a license key
+- [x] GeoIP integration, updating the database automatically using a license key
 - [ ] Optional fallback to Postgres only if the library users don't want to set up ClickHouse
 - [ ] Test coverage for... all of that.
 - [ ] A cute README file

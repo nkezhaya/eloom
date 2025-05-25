@@ -1,3 +1,5 @@
+// This is the Eloom client, which should be imported by user apps.
+
 const Eloom = (function () {
   let config = {
     endpoint: '/eloom/api/track', // set with init()
