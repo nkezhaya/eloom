@@ -1,6 +1,30 @@
 defmodule EloomWeb.UI.Icon do
   use Phoenix.Component
 
+  def arrow_up(assigns) do
+    ~H"""
+    <.svg fill="currentColor" viewbox="0 0 20 20" aria-hidden="true" data-slot="icon" {assigns}>
+      <path
+        fill-rule="evenodd"
+        d="M10 17a.75.75 0 0 1-.75-.75V5.612L5.29 9.77a.75.75 0 0 1-1.08-1.04l5.25-5.5a.75.75 0 0 1 1.08 0l5.25 5.5a.75.75 0 1 1-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0 1 10 17Z"
+        clip-rule="evenodd"
+      />
+    </.svg>
+    """
+  end
+
+  def arrow_down(assigns) do
+    ~H"""
+    <.svg fill="currentColor" viewbox="0 0 20 20" aria-hidden="true" data-slot="icon" {assigns}>
+      <path
+        fill-rule="evenodd"
+        d="M10 3a.75.75 0 0 1 .75.75v10.638l3.96-4.158a.75.75 0 1 1 1.08 1.04l-5.25 5.5a.75.75 0 0 1-1.08 0l-5.25-5.5a.75.75 0 1 1 1.08-1.04l3.96 4.158V3.75A.75.75 0 0 1 10 3Z"
+        clip-rule="evenodd"
+      />
+    </.svg>
+    """
+  end
+
   def home(assigns) do
     assigns = assign_defaults(assigns)
 

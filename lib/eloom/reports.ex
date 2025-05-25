@@ -7,7 +7,7 @@ defmodule Eloom.Reports do
 
   defmacrop now() do
     quote do
-      fragment("NOW()")
+      fragment("now()")
     end
   end
 
@@ -26,7 +26,7 @@ defmodule Eloom.Reports do
   def count_sessions(days) do
     {lower, upper} =
       case days do
-        %Range{} = range -> {range.first, range.last}
+        %Range{} = range -> {range.last, range.first}
         int when is_integer(int) -> {int, nil}
       end
 

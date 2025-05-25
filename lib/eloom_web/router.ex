@@ -10,7 +10,6 @@ defmodule EloomWeb.Router do
         live_session :eloom,
           root_layout: {EloomWeb.Layouts, :root},
           on_mount: [{EloomWeb.LiveHooks, :global}] do
-
           live "/", EloomWeb.HomeLive, :index
           live "/events", EloomWeb.EventLive, :index
           live "/funnels", EloomWeb.FunnelLive, :index
