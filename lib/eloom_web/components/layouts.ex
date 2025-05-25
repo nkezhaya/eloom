@@ -13,7 +13,7 @@ defmodule EloomWeb.Layouts do
   embed_templates "layouts/*"
 
   def asset_path(conn, asset) do
-    hash = EloomWeb.AssetsPlug.current_hash(asset)
+    hash = EloomWeb.AssetController.current_hash(asset)
     prefix = conn.private.phoenix_router.__eloom_prefix__()
 
     Phoenix.VerifiedRoutes.unverified_path(
