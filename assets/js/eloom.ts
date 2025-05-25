@@ -1,19 +1,29 @@
 // This is the Eloom client, which should be imported by user apps.
 
+type Event = {
+};
+
+type Config = {
+  endpoint: string,
+  writeKey: string, // optional, if needed
+  batchSize: number,
+  flushInterval: number,
+};
+
 const Eloom = (function () {
-  let config = {
+  let config: Config = {
     endpoint: '/eloom/api/track', // set with init()
     writeKey: '', // optional, if needed
     batchSize: 10,
     flushInterval: 5000,
   };
 
-  let userId = null;
+  let userId: string | null = null;
   let userProps = {};
   let anonymousId = getOrCreateAnonymousId();
-  let eventQueue = [];
+  let eventQueue: Event[] = [];
 
-  function init({ endpoint, writeKey }) {
+  function init({ endpoint, writeKey }: Config) {
     config.endpoint = endpoint;
     config.writeKey = writeKey;
     setInterval(flush, config.flushInterval);
@@ -23,19 +33,19 @@ const Eloom = (function () {
     });
   }
 
-  function identify(id) {
+  function identify(id: string) {
     userId = id;
   }
 
-  function setUserProperties(props) {
+  function setUserProperties(props: any) {
     userProps = { ...userProps, ...props };
   }
 
-  function track(event, properties = {}) {
+  function track(event: string, properties = {}) {
     const payload = {
       event,
       properties,
-      $insert_id: generateInsertId(),
+      $insert_id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
       user_id: userId,
       anonymous_id: userId ? null : anonymousId,

@@ -1,0 +1,20 @@
+{
+  "name": "eloom",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./priv/static/eloom.js",
+  "exports": {
+    "import": "./priv/static/eloom.js",
+    "require": "./priv/static/eloom.js"
+  },
+  "types": "./assets/js/eloom.d.ts",
+  "files": [
+    "priv/static/*"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

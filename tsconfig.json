@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "rootDirs": ["./assets/js"],
+    "outDir": "./priv/static"
+  },
+  "include": ["./assets/js/*.js", "./assets/js/*.ts"],
+  "exclude": ["node_modules"]
+}
