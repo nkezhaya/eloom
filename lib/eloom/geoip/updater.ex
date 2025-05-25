@@ -1,8 +1,24 @@
 defmodule Eloom.GeoIP.Updater do
+  @moduledoc """
+  A GenServer responsible for periodically updating the local MaxMind GeoIP
+  database (MMDB).
+
+  This module periodically checks for new versions of the MMDB database from
+  MaxMind, downloads and stores them, and ensures the latest database version is
+  loaded into ETS storage. It utilizes a global transaction lock to prevent
+  concurrent updates across distributed nodes.
+  """
+
   use GenServer
+  require Logger
 
   alias Eloom.GeoIP.{MMDBVersion, Client, Storage}
 
+  @doc """
+  Manually triggers an update check, downloading and loading a new MMDB version
+  if available.
+  """
+  @spec update() :: :ok | {:error, term()}
   def update do
     case Client.download_db() do
       {:ok, {date, tar}} ->
@@ -10,7 +26,8 @@ defmodule Eloom.GeoIP.Updater do
         Storage.load_latest()
         :ok
 
-      error ->
+      {:error, reason} = error ->
+        Logger.error("GeoIP download failed: #{inspect(reason)}")
         error
     end
   end
@@ -23,7 +40,11 @@ defmodule Eloom.GeoIP.Updater do
         if String.ends_with?(to_string(file), ".mmdb"), do: data
       end)
 
-    MMDBVersion.insert!(version, data)
+    if data do
+      MMDBVersion.insert!(version, data)
+    else
+      Logger.error("Expected a .mmdb file in the downloaded tar, found none.")
+    end
   end
 
   ## GenServer API

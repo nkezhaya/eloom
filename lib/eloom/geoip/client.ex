@@ -1,6 +1,28 @@
 defmodule Eloom.GeoIP.Client do
+  @moduledoc """
+  HTTP client module responsible for interacting with MaxMind's GeoIP database
+  service.
+
+  Handles fetching the latest modification date, downloading the GeoIP MMDB
+  database, and managing HTTP redirects. This module uses Erlang's built-in
+  `:httpc` for HTTP requests.
+
+  ## Configuration
+
+  Configuration is read from the application environment via `Eloom.Config.geoip/0`, requiring:
+
+    - `account_id`: Your MaxMind account ID
+    - `license_key`: Your MaxMind license key
+    - `edition`: The MMDB database edition (e.g., "GeoLite2-City")
+  """
+
   require Logger
 
+  @doc """
+  Fetches the last modification date of the MMDB file from MaxMind.
+
+  Returns `{:ok, Date.t()}` if successful, otherwise an error tuple.
+  """
   def fetch_last_modified do
     Logger.debug("Fetching last modified date...")
 
@@ -86,6 +108,7 @@ defmodule Eloom.GeoIP.Client do
     |> parse_date()
   end
 
+  # Converts a "YYYYMMDD" string into a Date struct.
   defp parse_date(<<year::binary-size(4), month::binary-size(2), day::binary-size(2)>>) do
     Date.new!(String.to_integer(year), String.to_integer(month), String.to_integer(day))
   end

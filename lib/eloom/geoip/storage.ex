@@ -1,4 +1,11 @@
 defmodule Eloom.GeoIP.Storage do
+  @moduledoc """
+  A GenServer for managing and caching the MaxMind GeoIP database (MMDB).
+
+  This server maintains the latest version of the MMDB in an ETS table for fast,
+  concurrent lookups. It automatically loads the most recent MMDB data, ensures
+  data consistency, and provides fast, thread-safe access to geolocation data.
+  """
   use GenServer
 
   @table_name :eloom_geoip_storage_table
@@ -12,7 +19,12 @@ defmodule Eloom.GeoIP.Storage do
     mmdb
   end
 
-  @spec load_latest() :: :ok
+  @doc """
+  Loads the latest available MMDB database version into ETS storage.
+
+  Returns `true` if a new version was loaded, or `false` if already up-to-date.
+  """
+  @spec load_latest() :: boolean()
   def load_latest do
     GenServer.call(__MODULE__, :load_latest)
   end
